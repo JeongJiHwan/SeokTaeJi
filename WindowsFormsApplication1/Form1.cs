@@ -70,7 +70,7 @@ namespace WindowsFormsApplication1
                     {
                         for (int i = 0; i < faces.Length; i++)
                         {
-                            
+
                             val[i] = (float)Cv2.Mean(frame.SubMat(faces[i]));
                             if (val[i] > standard)
                             {
@@ -121,7 +121,8 @@ namespace WindowsFormsApplication1
                                     dMgr.inputData(d);
                                     dList.Add(d);
 
-                                    if (d.warn) {
+                                    if (d.warn)
+                                    {
                                         simpleSound.Play();
                                         alarmcnt++;
                                     }
@@ -133,8 +134,8 @@ namespace WindowsFormsApplication1
                             }
                             dMgr.DisplayData(dataGridView1, dList);
                         }
-                        
-                        
+
+
                     }
                     else
                     {
@@ -162,9 +163,9 @@ namespace WindowsFormsApplication1
             }
             else
             {
-                
+
                 button1.Text = "카메라 On";
-                isCameraRunning = 0;                
+                isCameraRunning = 0;
 
                 if (capture.IsOpened())
                 {
@@ -174,20 +175,27 @@ namespace WindowsFormsApplication1
                 pictureBox1.Image = null;
             }
 
-            
+
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (button2.Text.Equals("거울모드 On"))
-            {                
-                button2.Text = "거울모드 Off";
-                flip = false;
+            if (isCameraRunning == 0)
+            {
+                MessageBox.Show("카메라를 켜주세요.");
             }
             else
             {
-                button2.Text = "거울모드 On";
-                flip = true;
+                if (button2.Text.Equals("거울모드 On"))
+                {
+                    button2.Text = "거울모드 Off";
+                    flip = true;
+                }
+                else
+                {
+                    button2.Text = "거울모드 On";
+                    flip = false;
+                }
             }
         }
         private void button3_Click(object sender, EventArgs e)
@@ -196,15 +204,23 @@ namespace WindowsFormsApplication1
         }
         private void button4_Click(object sender, EventArgs e)
         {
-            if (button4.Text.Equals("측정시작"))
+            if (isCameraRunning == 0)
             {
-                button4.Text = "측정종료";
-                startMeasure = true;
+                MessageBox.Show("카메라를 켜주세요.");
             }
             else
             {
-                button4.Text = "측정시작";
-                startMeasure = false;
+                if (button4.Text.Equals("측정시작"))
+                {
+                    button4.Text = "측정종료";
+                    startMeasure = true;
+                }
+                else
+                {
+                    simpleSound.Stop();
+                    button4.Text = "측정시작";
+                    startMeasure = false;
+                }
             }
         }
 
@@ -213,8 +229,8 @@ namespace WindowsFormsApplication1
             dMgr.LoadFromFile();
             dMgr.DisplayData(dataGridView1);
             textBox2.Text = DateTime.Now.ToString();
-            alarmcnt = dMgr.findBadData().Count-1;
-            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count-1, alarmcnt);
+            alarmcnt = dMgr.findBadData().Count - 1;
+            label6.Text = string.Format("Count : 0   Alarm : 0");
         }
         private void Timer1_Tick(object sender, EventArgs e)
         {
@@ -234,7 +250,7 @@ namespace WindowsFormsApplication1
                 sw.WriteLine(face);
                 sw.WriteLine(measure);
                 sw.WriteLine(stand);
-                sw.WriteLine(warn==true?"경고":"정상");
+                sw.WriteLine(warn == true ? "경고" : "정상");
             }
             public void LoadFromFile(StreamReader sr)
             {
@@ -264,7 +280,7 @@ namespace WindowsFormsApplication1
             }
             public void SaveToFile()
             {
-                StreamWriter sw = new StreamWriter("../../data.txt");
+                StreamWriter sw = File.AppendText("../../data.txt");
                 sw.WriteLine("{0}", dList.Count);
                 foreach (Data m in dList)
                 {
@@ -290,15 +306,15 @@ namespace WindowsFormsApplication1
             {
                 view.Rows.Clear();
                 view.Refresh();
-                for (int i=0; i<dList.Count; i++)
+                for (int i = 0; i < dList.Count; i++)
                 {
-                    string[] row1 = { dList[i].Date, dList[i].Time};
+                    string[] row1 = { dList[i].Date, dList[i].Time };
                     view.Rows.Add(row1);
                     Image img = Image.FromFile(dList[i].face);
                     ((DataGridViewImageCell)view.Rows[i].Cells[2]).Value = img;
                     view.Rows[i].Cells[3].Value = dList[i].stand;
                     view.Rows[i].Cells[4].Value = dList[i].measure;
-                    
+
                     if (dList[i].warn)
                     {
                         ((DataGridViewImageCell)view.Rows[i].Cells[5]).Value = bad;
@@ -310,10 +326,10 @@ namespace WindowsFormsApplication1
                     //view.Rows.Add(
                     //list.Items.Add(dList[i]);
                     //if (dList[i].warn == true) cnt++;
-                    view.FirstDisplayedScrollingRowIndex = view.Rows.Count-1;
+                    view.FirstDisplayedScrollingRowIndex = view.Rows.Count - 1;
                     view.Refresh();
                 }
-                
+
             }
             public void DisplayData(DataGridView view, List<Data> dataList, bool opt = false)
             {
@@ -348,14 +364,14 @@ namespace WindowsFormsApplication1
             public List<Data> findGoodData()
             {
                 List<Data> list = new List<Data>();
-                for(int i=0; i<dList.Count; i++)
+                for (int i = 0; i < dList.Count; i++)
                 {
                     if (!dList[i].warn)
                     {
                         list.Add(dList[i]);
                     }
                 }
-                return list;                
+                return list;
             }
             public List<Data> findBadData()
             {
@@ -391,7 +407,8 @@ namespace WindowsFormsApplication1
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             List<Data> tmpList;
-            switch(comboBox1.SelectedIndex){
+            switch (comboBox1.SelectedIndex)
+            {
                 case 0: //전체
                     dMgr.DisplayData(dataGridView1);
                     break;
@@ -408,9 +425,7 @@ namespace WindowsFormsApplication1
 
         private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count - 1, alarmcnt);
+            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count, alarmcnt + 1);
         }
     }
-    
-    
 }

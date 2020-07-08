@@ -46,29 +46,34 @@ namespace WindowsFormsApplication1
             this.label5 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.label6 = new System.Windows.Forms.Label();
             this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Time = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Face = new System.Windows.Forms.DataGridViewImageColumn();
             this.Stand = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Measure = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Warn = new System.Windows.Forms.DataGridViewImageColumn();
+            this.label6 = new System.Windows.Forms.Label();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.파일ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.설정ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.도움말ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(14, 88);
+            this.pictureBox1.Location = new System.Drawing.Point(13, 89);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(777, 800);
+            this.pictureBox1.Size = new System.Drawing.Size(731, 600);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(322, 915);
+            this.button1.Location = new System.Drawing.Point(271, 725);
             this.button1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(112, 68);
@@ -79,7 +84,7 @@ namespace WindowsFormsApplication1
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(441, 915);
+            this.button2.Location = new System.Drawing.Point(390, 725);
             this.button2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(112, 68);
@@ -90,7 +95,7 @@ namespace WindowsFormsApplication1
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(560, 915);
+            this.button3.Location = new System.Drawing.Point(509, 725);
             this.button3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(112, 68);
@@ -101,7 +106,7 @@ namespace WindowsFormsApplication1
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(679, 915);
+            this.button4.Location = new System.Drawing.Point(627, 725);
             this.button4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(112, 68);
@@ -114,7 +119,7 @@ namespace WindowsFormsApplication1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label1.Location = new System.Drawing.Point(74, 934);
+            this.label1.Location = new System.Drawing.Point(23, 744);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(101, 29);
             this.label1.TabIndex = 3;
@@ -124,7 +129,7 @@ namespace WindowsFormsApplication1
             // 
             this.textBox1.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textBox1.Location = new System.Drawing.Point(182, 928);
+            this.textBox1.Location = new System.Drawing.Point(130, 738);
             this.textBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(43, 34);
@@ -135,7 +140,7 @@ namespace WindowsFormsApplication1
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Gulim", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label2.Location = new System.Drawing.Point(232, 934);
+            this.label2.Location = new System.Drawing.Point(181, 744);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(34, 24);
             this.label2.TabIndex = 6;
@@ -145,7 +150,7 @@ namespace WindowsFormsApplication1
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label3.Location = new System.Drawing.Point(27, 48);
+            this.label3.Location = new System.Drawing.Point(14, 42);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(107, 29);
             this.label3.TabIndex = 7;
@@ -156,7 +161,7 @@ namespace WindowsFormsApplication1
             this.textBox2.BackColor = System.Drawing.SystemColors.Menu;
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
-            this.textBox2.Location = new System.Drawing.Point(128, 48);
+            this.textBox2.Location = new System.Drawing.Point(144, 45);
             this.textBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(392, 27);
@@ -166,7 +171,7 @@ namespace WindowsFormsApplication1
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label4.Location = new System.Drawing.Point(1363, 934);
+            this.label4.Location = new System.Drawing.Point(1349, 42);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(57, 29);
             this.label4.TabIndex = 3;
@@ -181,7 +186,7 @@ namespace WindowsFormsApplication1
             "전체",
             "정상",
             "경고"});
-            this.comboBox1.Location = new System.Drawing.Point(1429, 928);
+            this.comboBox1.Location = new System.Drawing.Point(1406, 39);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(77, 37);
@@ -193,11 +198,11 @@ namespace WindowsFormsApplication1
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.249999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label5.Location = new System.Drawing.Point(1446, 989);
+            this.label5.Location = new System.Drawing.Point(1391, 826);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(101, 17);
             this.label5.TabIndex = 3;
-            this.label5.Text = "석태지   V 1.0.0";
+            this.label5.Text = "석태지   V 1.1.0";
             // 
             // timer1
             // 
@@ -216,22 +221,14 @@ namespace WindowsFormsApplication1
             this.Stand,
             this.Measure,
             this.Warn});
-            this.dataGridView1.Location = new System.Drawing.Point(820, 91);
+            this.dataGridView1.Location = new System.Drawing.Point(763, 89);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowTemplate.Height = 50;
-            this.dataGridView1.Size = new System.Drawing.Size(722, 797);
+            this.dataGridView1.Size = new System.Drawing.Size(722, 704);
             this.dataGridView1.TabIndex = 11;
             this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(822, 45);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(45, 15);
-            this.label6.TabIndex = 12;
-            this.label6.Text = "label6";
             // 
             // Date
             // 
@@ -246,7 +243,7 @@ namespace WindowsFormsApplication1
             // 
             // Face
             // 
-            this.Face.HeaderText = "측정사진";
+            this.Face.HeaderText = "사진";
             this.Face.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Stretch;
             this.Face.Name = "Face";
             this.Face.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -268,11 +265,52 @@ namespace WindowsFormsApplication1
             this.Warn.HeaderText = "판정";
             this.Warn.Name = "Warn";
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(765, 42);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(45, 15);
+            this.label6.TabIndex = 12;
+            this.label6.Text = "label6";
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.파일ToolStripMenuItem,
+            this.설정ToolStripMenuItem,
+            this.도움말ToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(1497, 28);
+            this.menuStrip1.TabIndex = 13;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // 파일ToolStripMenuItem
+            // 
+            this.파일ToolStripMenuItem.Name = "파일ToolStripMenuItem";
+            this.파일ToolStripMenuItem.Size = new System.Drawing.Size(51, 24);
+            this.파일ToolStripMenuItem.Text = "파일";
+            // 
+            // 설정ToolStripMenuItem
+            // 
+            this.설정ToolStripMenuItem.Name = "설정ToolStripMenuItem";
+            this.설정ToolStripMenuItem.Size = new System.Drawing.Size(51, 24);
+            this.설정ToolStripMenuItem.Text = "설정";
+            // 
+            // 도움말ToolStripMenuItem
+            // 
+            this.도움말ToolStripMenuItem.Name = "도움말ToolStripMenuItem";
+            this.도움말ToolStripMenuItem.Size = new System.Drawing.Size(66, 24);
+            this.도움말ToolStripMenuItem.Text = "도움말";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1554, 1016);
+            this.ClientSize = new System.Drawing.Size(1497, 856);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.comboBox1);
@@ -288,6 +326,8 @@ namespace WindowsFormsApplication1
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Form1";
             this.Text = "석태지 열화상 프로그램";
@@ -295,6 +335,8 @@ namespace WindowsFormsApplication1
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -318,6 +360,10 @@ namespace WindowsFormsApplication1
         private System.Windows.Forms.Timer timer1;
         private DataGridView dataGridView1;
         private Label label6;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem 파일ToolStripMenuItem;
+        private ToolStripMenuItem 설정ToolStripMenuItem;
+        private ToolStripMenuItem 도움말ToolStripMenuItem;
         private DataGridViewTextBoxColumn Date;
         private DataGridViewTextBoxColumn Time;
         private DataGridViewImageColumn Face;
@@ -326,4 +372,3 @@ namespace WindowsFormsApplication1
         private DataGridViewImageColumn Warn;
     }
 }
-
