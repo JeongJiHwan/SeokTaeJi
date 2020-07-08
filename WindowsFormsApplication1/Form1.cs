@@ -31,7 +31,7 @@ namespace WindowsFormsApplication1
         bool flip = false;
         bool startMeasure = false;
         SoundPlayer simpleSound = new SoundPlayer(@"경보음2.wav");
-
+        int framecnt = 0;
         private void CaptureCamera()
         {
 
@@ -56,6 +56,8 @@ namespace WindowsFormsApplication1
             }
             while (isCameraRunning == 1)
             {
+                if (framecnt > 2100000) framecnt = 0;
+                framecnt++;
                 capture.Read(frame);
                 if (flip)
                     Cv2.Flip(frame, frame, FlipMode.Y);
@@ -66,8 +68,16 @@ namespace WindowsFormsApplication1
                     {
                         for (int i = 0; i < faces.Length; i++)
                         {
-                            Cv2.Rectangle(frame, faces[i], Scalar.Red); // add rectangle to the image
+                            
                             val[i] = (float)Cv2.Mean(frame.SubMat(faces[i]));
+                            if (val[i] > standard)
+                            {
+                                Cv2.Rectangle(frame, faces[i], Scalar.Red); // add rectangle to the image
+                            }
+                            else
+                            {
+                                Cv2.Rectangle(frame, faces[i], Scalar.Green); // add rectangle to the image
+                            }
                             //textBox1.Text = textBox1.Text + "\tfaces : " + faces[i];
                         }
 
@@ -89,32 +99,37 @@ namespace WindowsFormsApplication1
                             }
 
                         }
-                        
-                        List<Data> dList = new List<Data>();
-                        for (int i = 0; i < faces.Length; i++)
+                        if (framecnt % 30 == 0)
                         {
-                            try
+                            List<Data> dList = new List<Data>();
+                            for (int i = 0; i < faces.Length; i++)
                             {
-                                Mat dst = frame.SubMat(faces[i]);
-                                DateTime time = DateTime.Now;
-                                string str = time.ToString("yyyyMMddhhmmss");
 
-                                string filename = string.Format("../../faces/{0}.jpg", str);
+                                try
+                                {
+                                    Mat dst = frame.SubMat(faces[i]);
+                                    DateTime time = DateTime.Now;
+                                    string str = time.ToString("yyyyMMddhhmmss");
 
-                                //Cv2.ImShow(filename, dst);
-                                Cv2.ImWrite(filename, dst);
+                                    string filename = string.Format("../../faces/{0}.jpg", str);
 
-                                Data d = new Data() { Date = time.ToString("yyyy/MM/dd"), Time = time.ToString("hh:mm:ss"), face = filename, measure = val[i].ToString(), stand = standard.ToString(), warn = val[i] > standard };
-                                dMgr.inputData(d);
-                                dList.Add(d);
-                                if (float.Parse(d.measure) > float.Parse(d.stand)) simpleSound.Play();
+                                    //Cv2.ImShow(filename, dst);
+                                    Cv2.ImWrite(filename, dst);
+
+                                    Data d = new Data() { Date = time.ToString("yyyy/MM/dd"), Time = time.ToString("hh:mm:ss"), face = filename, measure = val[i].ToString(), stand = standard.ToString(), warn = val[i] > standard };
+                                    dMgr.inputData(d);
+                                    dList.Add(d);
+
+                                    if (float.Parse(d.measure) > float.Parse(d.stand)) simpleSound.Play();
+                                }
+                                catch (Exception)
+                                {
+                                    MessageBox.Show("SubMat Error");
+                                }
                             }
-                            catch (Exception)
-                            {
-                                MessageBox.Show("SubMat Error");
-                            }
+                            dMgr.DisplayData(dataGridView1, dList);
                         }
-                        dMgr.DisplayData(dataGridView1, dList);
+                        
                         
                     }
                     else
