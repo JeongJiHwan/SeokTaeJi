@@ -27,11 +27,12 @@ namespace WindowsFormsApplication1
         Rect[] faces;
         float[] val = new float[10];
         DataMgr dMgr = new DataMgr();
-        float standard = 70;
+        float standard = 110;
         bool flip = false;
         bool startMeasure = false;
         SoundPlayer simpleSound = new SoundPlayer(@"경보음2.wav");
         int framecnt = 0;
+        int alarmcnt = 0;
         private void CaptureCamera()
         {
 
@@ -56,13 +57,14 @@ namespace WindowsFormsApplication1
             }
             while (isCameraRunning == 1)
             {
-                if (framecnt > 2100000) framecnt = 0;
+                if (framecnt > 1000000) framecnt = 0;
                 framecnt++;
                 capture.Read(frame);
                 if (flip)
                     Cv2.Flip(frame, frame, FlipMode.Y);
                 if (!frame.Empty())
                 {
+
                     faces = faceCascade.DetectMultiScale(frame);
                     if (faces.Length > 0 && startMeasure)
                     {
@@ -99,12 +101,11 @@ namespace WindowsFormsApplication1
                             }
 
                         }
-                        if (framecnt % 30 == 0)
+                        if (framecnt % 10 == 0)
                         {
                             List<Data> dList = new List<Data>();
                             for (int i = 0; i < faces.Length; i++)
                             {
-
                                 try
                                 {
                                     Mat dst = frame.SubMat(faces[i]);
@@ -120,7 +121,10 @@ namespace WindowsFormsApplication1
                                     dMgr.inputData(d);
                                     dList.Add(d);
 
-                                    if (float.Parse(d.measure) > float.Parse(d.stand)) simpleSound.Play();
+                                    if (d.warn) {
+                                        simpleSound.Play();
+                                        alarmcnt++;
+                                    }
                                 }
                                 catch (Exception)
                                 {
@@ -209,6 +213,8 @@ namespace WindowsFormsApplication1
             dMgr.LoadFromFile();
             dMgr.DisplayData(dataGridView1);
             textBox2.Text = DateTime.Now.ToString();
+            alarmcnt = dMgr.findBadData().Count-1;
+            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count-1, alarmcnt);
         }
         private void Timer1_Tick(object sender, EventArgs e)
         {
@@ -280,10 +286,11 @@ namespace WindowsFormsApplication1
                 sr.Close();
                 sr.Dispose();
             }
-            public int DisplayData(DataGridView view)
+            public void DisplayData(DataGridView view)
             {
-                int cnt = 0;
-                for(int i=0; i<dList.Count; i++)
+                view.Rows.Clear();
+                view.Refresh();
+                for (int i=0; i<dList.Count; i++)
                 {
                     string[] row1 = { dList[i].Date, dList[i].Time};
                     view.Rows.Add(row1);
@@ -303,15 +310,21 @@ namespace WindowsFormsApplication1
                     //view.Rows.Add(
                     //list.Items.Add(dList[i]);
                     //if (dList[i].warn == true) cnt++;
+                    view.FirstDisplayedScrollingRowIndex = view.Rows.Count-1;
+                    view.Refresh();
                 }
-                return cnt;
-            }
-            public void DisplayData(DataGridView view, List<Data> dataList)
-            {
                 
+            }
+            public void DisplayData(DataGridView view, List<Data> dataList, bool opt = false)
+            {
+                if (opt)
+                {
+                    view.Rows.Clear();
+                    view.Refresh();
+                }
                 for (int i = 0; i < dataList.Count; i++)
                 {
-                    int lastIdx = view.Rows.Count-1;
+                    int lastIdx = view.Rows.Count;
                     string[] row1 = { dataList[i].Date, dataList[i].Time };
                     view.Rows.Add(row1);
                     Image img = Image.FromFile(dataList[i].face);
@@ -327,8 +340,34 @@ namespace WindowsFormsApplication1
                     {
                         ((DataGridViewImageCell)view.Rows[lastIdx].Cells[5]).Value = good;
                     }
-
+                    view.FirstDisplayedScrollingRowIndex = view.Rows.Count - 1;
+                    view.Refresh();
                 }
+
+            }
+            public List<Data> findGoodData()
+            {
+                List<Data> list = new List<Data>();
+                for(int i=0; i<dList.Count; i++)
+                {
+                    if (!dList[i].warn)
+                    {
+                        list.Add(dList[i]);
+                    }
+                }
+                return list;                
+            }
+            public List<Data> findBadData()
+            {
+                List<Data> list = new List<Data>();
+                for (int i = 0; i < dList.Count; i++)
+                {
+                    if (dList[i].warn)
+                    {
+                        list.Add(dList[i]);
+                    }
+                }
+                return list;
             }
             public void inputData(Data d)
             {
@@ -347,6 +386,29 @@ namespace WindowsFormsApplication1
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             standard = float.Parse(textBox1.Text);
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            List<Data> tmpList;
+            switch(comboBox1.SelectedIndex){
+                case 0: //전체
+                    dMgr.DisplayData(dataGridView1);
+                    break;
+                case 1: //정상
+                    tmpList = dMgr.findGoodData();
+                    dMgr.DisplayData(dataGridView1, tmpList, true);
+                    break;
+                case 2: //경고
+                    tmpList = dMgr.findBadData();
+                    dMgr.DisplayData(dataGridView1, tmpList, true);
+                    break;
+            }
+        }
+
+        private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count - 1, alarmcnt);
         }
     }
     

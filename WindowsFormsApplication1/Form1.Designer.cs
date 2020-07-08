@@ -41,12 +41,12 @@ namespace WindowsFormsApplication1
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.label6 = new System.Windows.Forms.Label();
             this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Time = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Face = new System.Windows.Forms.DataGridViewImageColumn();
@@ -162,17 +162,6 @@ namespace WindowsFormsApplication1
             this.textBox2.Size = new System.Drawing.Size(392, 27);
             this.textBox2.TabIndex = 8;
             // 
-            // textBox3
-            // 
-            this.textBox3.BackColor = System.Drawing.SystemColors.Menu;
-            this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
-            this.textBox3.Location = new System.Drawing.Point(798, 46);
-            this.textBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(383, 27);
-            this.textBox3.TabIndex = 9;
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
@@ -198,6 +187,7 @@ namespace WindowsFormsApplication1
             this.comboBox1.Size = new System.Drawing.Size(77, 37);
             this.comboBox1.TabIndex = 10;
             this.comboBox1.Text = "전체";
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // label5
             // 
@@ -217,6 +207,7 @@ namespace WindowsFormsApplication1
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Date,
@@ -227,12 +218,24 @@ namespace WindowsFormsApplication1
             this.Warn});
             this.dataGridView1.Location = new System.Drawing.Point(820, 91);
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowTemplate.Height = 50;
             this.dataGridView1.Size = new System.Drawing.Size(722, 797);
             this.dataGridView1.TabIndex = 11;
+            this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(822, 45);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(45, 15);
+            this.label6.TabIndex = 12;
+            this.label6.Text = "label6";
             // 
             // Date
             // 
+            this.Date.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Date.HeaderText = "날짜";
             this.Date.Name = "Date";
             // 
@@ -248,6 +251,7 @@ namespace WindowsFormsApplication1
             this.Face.Name = "Face";
             this.Face.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.Face.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.Face.Width = 50;
             // 
             // Stand
             // 
@@ -269,9 +273,9 @@ namespace WindowsFormsApplication1
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1554, 1016);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -307,13 +311,13 @@ namespace WindowsFormsApplication1
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Timer timer1;
         private DataGridView dataGridView1;
+        private Label label6;
         private DataGridViewTextBoxColumn Date;
         private DataGridViewTextBoxColumn Time;
         private DataGridViewImageColumn Face;
