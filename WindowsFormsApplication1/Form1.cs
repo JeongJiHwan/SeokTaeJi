@@ -27,6 +27,8 @@ namespace WindowsFormsApplication1
         float[] val = new float[10];
         DataMgr dMgr = new DataMgr();
         float standard = 70;
+        bool flip = false;
+        
         private void CaptureCamera()
         {
 
@@ -52,6 +54,8 @@ namespace WindowsFormsApplication1
             while (isCameraRunning == 1)
             {
                 capture.Read(frame);
+                if (flip)
+                    Cv2.Flip(frame, frame, FlipMode.Y);
                 if (!frame.Empty())
                 {
                     faces = faceCascade.DetectMultiScale(frame);
@@ -142,7 +146,7 @@ namespace WindowsFormsApplication1
                     capture.Release();
                 }
 
-                dMgr.DisplayData(listBox1, dList);
+                dMgr.DisplayData(dataGridView1, dList);
             }
 
             
@@ -151,20 +155,14 @@ namespace WindowsFormsApplication1
         private void button2_Click(object sender, EventArgs e)
         {
             if (button2.Text.Equals("거울모드 On"))
-            {
-                CaptureCamera();
+            {                
                 button2.Text = "거울모드 Off";
-                isCameraRunning = 1;
+                flip = false;
             }
             else
             {
-                if (capture.IsOpened())
-                {
-                    capture.Release();
-                }
-
                 button2.Text = "거울모드 On";
-                isCameraRunning = 0;
+                flip = true;
             }
         }
         private void button3_Click(object sender, EventArgs e)
@@ -209,7 +207,7 @@ namespace WindowsFormsApplication1
         private void Form1_Load(object sender, EventArgs e)
         {
             dMgr.LoadFromFile();
-            dMgr.DisplayData(listBox1);
+            dMgr.DisplayData(dataGridView1);
             textBox2.Text = DateTime.Now.ToString();
         }
         private void Timer1_Tick(object sender, EventArgs e)
@@ -250,6 +248,14 @@ namespace WindowsFormsApplication1
         };
         class DataMgr
         {
+            public DataMgr()
+            {
+                Bitmap tmpgood = new Bitmap("../../good.png");
+                Bitmap tmpbad = new Bitmap("../../bad.png");
+                System.Drawing.Size resize = new System.Drawing.Size(50, 50);
+                good = new Bitmap(tmpgood, resize);
+                bad = new Bitmap(tmpbad, resize);
+            }
             public void SaveToFile()
             {
                 StreamWriter sw = new StreamWriter("../../data.txt");
@@ -274,28 +280,62 @@ namespace WindowsFormsApplication1
                 sr.Close();
                 sr.Dispose();
             }
-            public int DisplayData(ListBox list)
+            public int DisplayData(DataGridView view)
             {
                 int cnt = 0;
-                list.Items.Clear();
                 for(int i=0; i<dList.Count; i++)
                 {
-                    list.Items.Add(dList[i]);
-                    if (dList[i].warn == true) cnt++;
+                    string[] row1 = { dList[i].Date, dList[i].Time};
+                    view.Rows.Add(row1);
+                    Image img = Image.FromFile(dList[i].face);
+                    ((DataGridViewImageCell)view.Rows[i].Cells[2]).Value = img;
+                    view.Rows[i].Cells[3].Value = dList[i].stand;
+                    view.Rows[i].Cells[4].Value = dList[i].measure;
+                    
+                    if (dList[i].warn)
+                    {
+                        ((DataGridViewImageCell)view.Rows[i].Cells[5]).Value = bad;
+                    }
+                    else
+                    {
+                        ((DataGridViewImageCell)view.Rows[i].Cells[5]).Value = good;
+                    }
+                    //view.Rows.Add(
+                    //list.Items.Add(dList[i]);
+                    //if (dList[i].warn == true) cnt++;
                 }
                 return cnt;
             }
-            public void DisplayData(ListBox list, List<Data> dataList)
+            public void DisplayData(DataGridView view, List<Data> dataList)
             {
+                
                 for (int i = 0; i < dataList.Count; i++)
                 {
-                    list.Items.Add(dataList[i]);
+                    int lastIdx = view.Rows.Count-1;
+                    string[] row1 = { dataList[i].Date, dataList[i].Time };
+                    view.Rows.Add(row1);
+                    Image img = Image.FromFile(dataList[i].face);
+                    ((DataGridViewImageCell)view.Rows[lastIdx].Cells[2]).Value = img;
+                    view.Rows[lastIdx].Cells[3].Value = dataList[i].stand;
+                    view.Rows[lastIdx].Cells[4].Value = dataList[i].measure;
+
+                    if (dataList[i].warn)
+                    {
+                        ((DataGridViewImageCell)view.Rows[lastIdx].Cells[5]).Value = bad;
+                    }
+                    else
+                    {
+                        ((DataGridViewImageCell)view.Rows[lastIdx].Cells[5]).Value = good;
+                    }
+
                 }
             }
             public void inputData(Data d)
             {
                 dList.Add(d);
             }
+            Bitmap good;
+            Bitmap bad;
             List<Data> dList = new List<Data>();
         }
 

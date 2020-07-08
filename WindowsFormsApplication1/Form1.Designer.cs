@@ -37,7 +37,6 @@ namespace WindowsFormsApplication1
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.listBox1 = new System.Windows.Forms.ListBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -47,7 +46,15 @@ namespace WindowsFormsApplication1
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Time = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Face = new System.Windows.Forms.DataGridViewImageColumn();
+            this.Stand = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Measure = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Warn = new System.Windows.Forms.DataGridViewImageColumn();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -112,17 +119,6 @@ namespace WindowsFormsApplication1
             this.label1.Size = new System.Drawing.Size(101, 29);
             this.label1.TabIndex = 3;
             this.label1.Text = "기준온도: ";
-            // 
-            // listBox1
-            // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 15;
-            this.listBox1.Location = new System.Drawing.Point(798, 88);
-            this.listBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.ScrollAlwaysVisible = true;
-            this.listBox1.Size = new System.Drawing.Size(732, 799);
-            this.listBox1.TabIndex = 4;
             // 
             // textBox1
             // 
@@ -219,18 +215,67 @@ namespace WindowsFormsApplication1
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
             // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Date,
+            this.Time,
+            this.Face,
+            this.Stand,
+            this.Measure,
+            this.Warn});
+            this.dataGridView1.Location = new System.Drawing.Point(820, 91);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowTemplate.Height = 50;
+            this.dataGridView1.Size = new System.Drawing.Size(722, 797);
+            this.dataGridView1.TabIndex = 11;
+            // 
+            // Date
+            // 
+            this.Date.HeaderText = "날짜";
+            this.Date.Name = "Date";
+            // 
+            // Time
+            // 
+            this.Time.HeaderText = "시간";
+            this.Time.Name = "Time";
+            // 
+            // Face
+            // 
+            this.Face.HeaderText = "측정사진";
+            this.Face.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Stretch;
+            this.Face.Name = "Face";
+            this.Face.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Face.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // Stand
+            // 
+            this.Stand.HeaderText = "기준값";
+            this.Stand.Name = "Stand";
+            // 
+            // Measure
+            // 
+            this.Measure.HeaderText = "측정값";
+            this.Measure.Name = "Measure";
+            // 
+            // Warn
+            // 
+            this.Warn.HeaderText = "판정";
+            this.Warn.Name = "Warn";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1554, 1016);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.listBox1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label1);
@@ -245,6 +290,7 @@ namespace WindowsFormsApplication1
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -257,7 +303,6 @@ namespace WindowsFormsApplication1
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
@@ -268,7 +313,13 @@ namespace WindowsFormsApplication1
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Timer timer1;
-
+        private DataGridView dataGridView1;
+        private DataGridViewTextBoxColumn Date;
+        private DataGridViewTextBoxColumn Time;
+        private DataGridViewImageColumn Face;
+        private DataGridViewTextBoxColumn Stand;
+        private DataGridViewTextBoxColumn Measure;
+        private DataGridViewImageColumn Warn;
     }
 }
 
