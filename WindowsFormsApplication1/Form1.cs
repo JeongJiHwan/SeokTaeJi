@@ -12,6 +12,7 @@ using OpenCvSharp.Extensions;
 using System.Threading;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Media;
 
 namespace WindowsFormsApplication1
 {
@@ -28,7 +29,9 @@ namespace WindowsFormsApplication1
         DataMgr dMgr = new DataMgr();
         float standard = 70;
         bool flip = false;
-        
+        bool startMeasure = false;
+        SoundPlayer simpleSound = new SoundPlayer(@"경보음2.wav");
+
         private void CaptureCamera()
         {
 
@@ -59,7 +62,7 @@ namespace WindowsFormsApplication1
                 if (!frame.Empty())
                 {
                     faces = faceCascade.DetectMultiScale(frame);
-                    if (faces.Length > 0)
+                    if (faces.Length > 0 && startMeasure)
                     {
                         for (int i = 0; i < faces.Length; i++)
                         {
@@ -86,6 +89,33 @@ namespace WindowsFormsApplication1
                             }
 
                         }
+                        
+                        List<Data> dList = new List<Data>();
+                        for (int i = 0; i < faces.Length; i++)
+                        {
+                            try
+                            {
+                                Mat dst = frame.SubMat(faces[i]);
+                                DateTime time = DateTime.Now;
+                                string str = time.ToString("yyyyMMddhhmmss");
+
+                                string filename = string.Format("../../faces/{0}.jpg", str);
+
+                                //Cv2.ImShow(filename, dst);
+                                Cv2.ImWrite(filename, dst);
+
+                                Data d = new Data() { Date = time.ToString("yyyy/MM/dd"), Time = time.ToString("hh:mm:ss"), face = filename, measure = val[i].ToString(), stand = standard.ToString(), warn = val[i] > standard };
+                                dMgr.inputData(d);
+                                dList.Add(d);
+                                if (float.Parse(d.measure) > float.Parse(d.stand)) simpleSound.Play();
+                            }
+                            catch (Exception)
+                            {
+                                MessageBox.Show("SubMat Error");
+                            }
+                        }
+                        dMgr.DisplayData(dataGridView1, dList);
+                        
                     }
                     else
                     {
@@ -113,40 +143,16 @@ namespace WindowsFormsApplication1
             }
             else
             {
-                List<Data> dList = new List<Data>();
+                
                 button1.Text = "카메라 On";
-                isCameraRunning = 0;
-
-                for (int i = 0; i < faces.Length; i++)
-                {                    
-                    try
-                    {
-                        Mat dst = frame.SubMat(faces[i]);
-                        DateTime time = DateTime.Now;
-                        string str = time.ToString("yyyyMMddhhmmss");
-
-                        string filename = string.Format("../../faces/{0}.jpg", str);
-
-                        //Cv2.ImShow(filename, dst);
-                        Cv2.ImWrite(filename, dst);
-
-                        Data d = new Data() { Date = time.ToString("yyyy/MM/dd"), Time = time.ToString("hh:mm:ss"), face = filename, measure = val[i].ToString(), stand = standard.ToString(), warn = val[i] > float.Parse("75") };
-                        dMgr.inputData(d);
-                        dList.Add(d);
-                        Thread.Sleep(1000);
-                    }
-                    catch (Exception)
-                    {
-                        MessageBox.Show("SubMat Error");
-                    }
-                }
+                isCameraRunning = 0;                
 
                 if (capture.IsOpened())
                 {
                     capture.Release();
                 }
 
-                dMgr.DisplayData(dataGridView1, dList);
+                pictureBox1.Image = null;
             }
 
             
@@ -167,40 +173,19 @@ namespace WindowsFormsApplication1
         }
         private void button3_Click(object sender, EventArgs e)
         {
-            if (button3.Text.Equals("알람 Off"))
-            {
-                CaptureCamera();
-                button3.Text = "알람 On";
-                isCameraRunning = 1;
-            }
-            else
-            {
-                if (capture.IsOpened())
-                {
-                    capture.Release();
-                }
-
-                button3.Text = "알람 Off";
-                isCameraRunning = 0;
-            }
+            simpleSound.Stop();
         }
         private void button4_Click(object sender, EventArgs e)
         {
             if (button4.Text.Equals("측정시작"))
             {
-                CaptureCamera();
-                button4.Text = "카메라 Off";
-                isCameraRunning = 1;
+                button4.Text = "측정종료";
+                startMeasure = true;
             }
             else
             {
-                if (capture.IsOpened())
-                {
-                    capture.Release();
-                }
-
                 button4.Text = "측정시작";
-                isCameraRunning = 0;
+                startMeasure = false;
             }
         }
 
