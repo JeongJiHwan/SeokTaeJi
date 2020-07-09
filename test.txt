@@ -2,5 +2,4 @@ void func(double i, double j)
 {
 	//추가 작업
 	//do action
-            //추가작업2
 }
