@@ -38,7 +38,7 @@ namespace WindowsFormsApplication1
         MySqlConnection conn;
         Mat good;
         Mat bad;
-        DataTable dtRecord = new DataTable();
+        DataTable dtRecord;
 
         public void OpenConnection()
         {
@@ -192,7 +192,7 @@ namespace WindowsFormsApplication1
             OpenCvSharp.Size resize = new OpenCvSharp.Size(64, 64);
             good = tmpgood.Resize(resize);
             bad = tmpbad.Resize(resize);
-            //ReadDate();
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -268,6 +268,7 @@ namespace WindowsFormsApplication1
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            dtRecord = new DataTable();
             Form3 f = new Form3();
             if (f.ShowDialog() == DialogResult.OK)
             {
@@ -277,12 +278,13 @@ namespace WindowsFormsApplication1
                 Application.Exit();
             }
             f.Close();
-
+            
             OpenConnection();
+            ReadDate();
             DisplayData("SELECT * FROM data");
             CloseConnection();
             textBox2.Text = DateTime.Now.ToString();
-            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count, alarmcnt + 1);
+            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count<0?0: dataGridView1.Rows.Count, alarmcnt + 1);
         }
         private void Timer1_Tick(object sender, EventArgs e)
         {
@@ -303,23 +305,13 @@ namespace WindowsFormsApplication1
                 //sqlDataAdap.Update(dtRecord);
                 dataGridView1.DataSource = dtRecord;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                MessageBox.Show(e.ToString());
             }
-            dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.Rows.Count - 1;
+            //dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.Rows.Count;
         }
                     
-
-        protected override void WndProc(ref Message m)
-        {
-            int WM_CLOSE = 0x0010;
-            if (m.Msg == WM_CLOSE)
-            {
-                Form4 close = new Form4();
-                close.ShowDialog();
-            }
-            base.WndProc(ref m);
-        }
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             standard = float.Parse(textBox1.Text);
@@ -363,9 +355,10 @@ namespace WindowsFormsApplication1
         }
 		private void ReadDate()
         {
+            string str="";
             try
             {
-                MySqlCommand command = new MySqlCommand("select distinct Date from data", conn);
+                MySqlCommand command = new MySqlCommand("SELECT DISTINCT Date FROM data", conn);
                 MySqlDataReader rdr = command.ExecuteReader();
 
                 string temp = string.Empty;
@@ -376,14 +369,40 @@ namespace WindowsFormsApplication1
                     {
                         for (int i = 0; i < rdr.FieldCount; i++)
                         {
-                            //comboBox2.Items.Add(rdr[i]);
+                            str = rdr[i].ToString();
+                            comboBox2.Items.Add(str);
                         }
                     }
                 }
+                rdr.Close();
+                rdr.Dispose();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                MessageBox.Show("ReadDate Error");
+                MessageBox.Show(e.ToString());
+            }
+            if (comboBox2.Items.Contains(str)) comboBox2.SelectedItem=str;
+            
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            dtRecord.Dispose();
+            conn.Close();
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string str = (string)comboBox2.SelectedItem;
+            DisplayData(string.Format("SELECT * FROM data WHERE Date = {0}", str));
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (MessageBox.Show("정말 종료합니까?", "종료", MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                e.Cancel = true;
             }
         }
-    }}
+    }
+}

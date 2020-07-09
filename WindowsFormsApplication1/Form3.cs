@@ -55,7 +55,10 @@ namespace WindowsFormsApplication1
 
         private void Username_KeyDown(object sender, KeyEventArgs e)
         {
-
+            if (e.KeyCode == Keys.Enter)
+            {
+                button2_Click_1(sender, e);
+            }
         }
     }
 }
