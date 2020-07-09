@@ -140,6 +140,7 @@ namespace WindowsFormsApplication1
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(43, 34);
             this.textBox1.TabIndex = 5;
+            this.textBox1.Text = "110";
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label2
@@ -230,14 +231,7 @@ namespace WindowsFormsApplication1
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeight = 30;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Date,
-            this.Time,
-            this.Face,
-            this.Stand,
-            this.Measure,
-            this.Warn});
-            this.dataGridView1.Location = new System.Drawing.Point(668, 71);
+            this.dataGridView1.Location = new System.Drawing.Point(761, 89);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView1.Name = "dataGridView1";
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
@@ -362,7 +356,6 @@ namespace WindowsFormsApplication1
             this.프로그램정보ToolStripMenuItem.Text = "프로그램 정보";
             this.프로그램정보ToolStripMenuItem.Click += new System.EventHandler(this.프로그램정보ToolStripMenuItem_Click);
             // 
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -389,7 +382,6 @@ namespace WindowsFormsApplication1
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "석태지 열화상 프로그램";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();

@@ -39,24 +39,27 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(24, 93);
+            this.label2.Location = new System.Drawing.Point(27, 116);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(62, 12);
+            this.label2.Size = new System.Drawing.Size(72, 15);
             this.label2.TabIndex = 0;
             this.label2.Text = "Password";
             // 
             // Password
             // 
-            this.Password.Location = new System.Drawing.Point(102, 88);
+            this.Password.Location = new System.Drawing.Point(117, 110);
+            this.Password.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Password.Name = "Password";
-            this.Password.Size = new System.Drawing.Size(141, 21);
+            this.Password.Size = new System.Drawing.Size(161, 25);
             this.Password.TabIndex = 1;
+            this.Password.Text = "1234";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(254, 87);
+            this.button1.Location = new System.Drawing.Point(290, 109);
+            this.button1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(86, 29);
             this.button1.TabIndex = 2;
             this.button1.Text = "종료";
             this.button1.UseVisualStyleBackColor = true;
@@ -65,25 +68,28 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(24, 57);
+            this.label1.Location = new System.Drawing.Point(27, 71);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(67, 12);
+            this.label1.Size = new System.Drawing.Size(77, 15);
             this.label1.TabIndex = 0;
             this.label1.Text = "User name";
             // 
             // Username
             // 
-            this.Username.Location = new System.Drawing.Point(102, 52);
+            this.Username.Location = new System.Drawing.Point(117, 65);
+            this.Username.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Username.Name = "Username";
-            this.Username.Size = new System.Drawing.Size(141, 21);
+            this.Username.Size = new System.Drawing.Size(161, 25);
             this.Username.TabIndex = 1;
+            this.Username.Text = "석태지";
             this.Username.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Username_KeyDown);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(254, 51);
+            this.button2.Location = new System.Drawing.Point(290, 64);
+            this.button2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(86, 29);
             this.button2.TabIndex = 2;
             this.button2.Text = "Login";
             this.button2.UseVisualStyleBackColor = true;
@@ -91,15 +97,16 @@
             // 
             // Form3
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(353, 172);
+            this.ClientSize = new System.Drawing.Size(403, 215);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.Username);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Password);
             this.Controls.Add(this.label2);
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Form3";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "로그인";
