@@ -277,14 +277,14 @@ namespace WindowsFormsApplication1
             {
                 Application.Exit();
             }
-            f.Close();
-            
+            f.Close();            
             OpenConnection();
+            countAlarm();
             ReadDate();
             DisplayData("SELECT * FROM data");
             CloseConnection();
             textBox2.Text = DateTime.Now.ToString();
-            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count<0?0: dataGridView1.Rows.Count, alarmcnt + 1);
+            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count, alarmcnt);
         }
         private void Timer1_Tick(object sender, EventArgs e)
         {
@@ -334,7 +334,7 @@ namespace WindowsFormsApplication1
 
         private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count , alarmcnt+1);
+            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count , alarmcnt);
         }
         private void 프로그램정보ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -402,6 +402,30 @@ namespace WindowsFormsApplication1
             if (MessageBox.Show("정말 종료합니까?", "종료", MessageBoxButtons.YesNo) == DialogResult.No)
             {
                 e.Cancel = true;
+            }
+        }
+        private void countAlarm()
+        {
+            try
+            {
+                MySqlCommand command = new MySqlCommand("SELECT * FROM data WHERE Stand<Measure", conn);
+                MySqlDataReader rdr = command.ExecuteReader();
+
+                string temp = string.Empty;
+                if (rdr == null) temp = "No return";
+                else
+                {
+                    while (rdr.Read())
+                    {
+                        alarmcnt++;
+                    }
+                }
+                rdr.Close();
+                rdr.Dispose();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
             }
         }
     }
