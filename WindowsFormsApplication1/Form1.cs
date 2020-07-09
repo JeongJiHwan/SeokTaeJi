@@ -70,7 +70,7 @@ namespace WindowsFormsApplication1
                     {
                         for (int i = 0; i < faces.Length; i++)
                         {
-
+                            
                             val[i] = (float)Cv2.Mean(frame.SubMat(faces[i]));
                             if (val[i] > standard)
                             {
@@ -127,8 +127,8 @@ namespace WindowsFormsApplication1
                             }
                             dMgr.DisplayData(dataGridView1, dList);
                         }
-
-
+                        
+                        
                     }
                     else
                     {
@@ -156,9 +156,9 @@ namespace WindowsFormsApplication1
             }
             else
             {
-
+                
                 button1.Text = "카메라 On";
-                isCameraRunning = 0;
+                isCameraRunning = 0;                
 
                 if (capture.IsOpened())
                 {
@@ -168,7 +168,7 @@ namespace WindowsFormsApplication1
                 pictureBox1.Image = null;
             }
 
-
+            
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -197,7 +197,7 @@ namespace WindowsFormsApplication1
         }
         private void button4_Click(object sender, EventArgs e)
         {
-            if (isCameraRunning == 0)
+            if(isCameraRunning == 0)
             {
                 MessageBox.Show("카메라를 켜주세요.");
             }
@@ -207,6 +207,7 @@ namespace WindowsFormsApplication1
                 {
                     button4.Text = "측정종료";
                     startMeasure = true;
+                    
                 }
                 else
                 {
@@ -219,10 +220,20 @@ namespace WindowsFormsApplication1
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            Form3 f = new Form3();
+            if (f.ShowDialog() == DialogResult.OK)
+            {
+            }
+            else
+            {
+                Application.Exit(); 
+            }
+            f.Close();
+
             dMgr.LoadFromFile();
             dMgr.DisplayData(dataGridView1);
             textBox2.Text = DateTime.Now.ToString();
-            alarmcnt = dMgr.findBadData().Count - 1;
+            alarmcnt = dMgr.findBadData().Count-1;
             label6.Text = string.Format("Count : 0   Alarm : 0");
         }
         private void Timer1_Tick(object sender, EventArgs e)
@@ -243,7 +254,7 @@ namespace WindowsFormsApplication1
                 sw.WriteLine(face);
                 sw.WriteLine(measure);
                 sw.WriteLine(stand);
-                sw.WriteLine(warn == true ? "경고" : "정상");
+                sw.WriteLine(warn==true?"경고":"정상");
             }
             public void LoadFromFile(StreamReader sr)
             {
@@ -299,15 +310,15 @@ namespace WindowsFormsApplication1
             {
                 view.Rows.Clear();
                 view.Refresh();
-                for (int i = 0; i < dList.Count; i++)
+                for (int i=0; i<dList.Count; i++)
                 {
-                    string[] row1 = { dList[i].Date, dList[i].Time };
+                    string[] row1 = { dList[i].Date, dList[i].Time};
                     view.Rows.Add(row1);
                     Image img = Image.FromFile(dList[i].face);
                     ((DataGridViewImageCell)view.Rows[i].Cells[2]).Value = img;
                     view.Rows[i].Cells[3].Value = dList[i].stand;
                     view.Rows[i].Cells[4].Value = dList[i].measure;
-
+                    
                     if (dList[i].warn)
                     {
                         ((DataGridViewImageCell)view.Rows[i].Cells[5]).Value = bad;
@@ -319,10 +330,10 @@ namespace WindowsFormsApplication1
                     //view.Rows.Add(
                     //list.Items.Add(dList[i]);
                     //if (dList[i].warn == true) cnt++;
-                    view.FirstDisplayedScrollingRowIndex = view.Rows.Count - 1;
+                    view.FirstDisplayedScrollingRowIndex = view.Rows.Count-1;
                     view.Refresh();
                 }
-
+                
             }
             public void DisplayData(DataGridView view, List<Data> dataList, bool opt = false)
             {
@@ -357,14 +368,14 @@ namespace WindowsFormsApplication1
             public List<Data> findGoodData()
             {
                 List<Data> list = new List<Data>();
-                for (int i = 0; i < dList.Count; i++)
+                for(int i=0; i<dList.Count; i++)
                 {
                     if (!dList[i].warn)
                     {
                         list.Add(dList[i]);
                     }
                 }
-                return list;
+                return list;                
             }
             public List<Data> findBadData()
             {
@@ -391,6 +402,16 @@ namespace WindowsFormsApplication1
         {
             dMgr.SaveToFile();
         }
+        protected override void WndProc(ref Message m)
+        {
+            int WM_CLOSE = 0x0010;
+            if (m.Msg == WM_CLOSE)
+            {
+                Form4 close = new Form4();
+                close.ShowDialog();
+            }
+            base.WndProc(ref m);
+        }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
@@ -400,8 +421,7 @@ namespace WindowsFormsApplication1
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             List<Data> tmpList;
-            switch (comboBox1.SelectedIndex)
-            {
+            switch(comboBox1.SelectedIndex){
                 case 0: //전체
                     dMgr.DisplayData(dataGridView1);
                     break;
@@ -418,7 +438,26 @@ namespace WindowsFormsApplication1
 
         private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count, alarmcnt + 1);
+            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count , alarmcnt+1);
         }
-    }
+
+        private void 프로그램정보ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form2 info = new Form2();
+
+            info.ShowDialog();
+        }
+
+        private void 로그아웃ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            Application.Restart();
+        }
+
+        private void 프로그램종료ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+    } 
 }
