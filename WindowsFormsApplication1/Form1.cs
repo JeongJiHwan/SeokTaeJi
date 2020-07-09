@@ -144,6 +144,7 @@ namespace WindowsFormsApplication1
         public Form1()
         {
             InitializeComponent();
+            //ReadDate();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -318,6 +319,7 @@ namespace WindowsFormsApplication1
                     ((DataGridViewImageCell)view.Rows[i].Cells[2]).Value = img;
                     view.Rows[i].Cells[3].Value = dList[i].stand;
                     view.Rows[i].Cells[4].Value = dList[i].measure;
+        }
                     
                     if (dList[i].warn)
                     {
