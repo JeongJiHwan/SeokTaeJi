@@ -1,4 +1,4 @@
-void func(int i, int j)
+void func(double i, double j)
 {
 	//추가 작업
 	//do action
