@@ -49,12 +49,6 @@ namespace WindowsFormsApplication1
             this.label5 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Time = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Face = new System.Windows.Forms.DataGridViewImageColumn();
-            this.Stand = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Measure = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Warn = new System.Windows.Forms.DataGridViewImageColumn();
             this.label6 = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.로그인ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,6 +57,7 @@ namespace WindowsFormsApplication1
             this.프로그램종료ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.도움말ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.프로그램정보ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.comboBox2 = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -222,13 +217,6 @@ namespace WindowsFormsApplication1
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeight = 30;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Date,
-            this.Time,
-            this.Face,
-            this.Stand,
-            this.Measure,
-            this.Warn});
             this.dataGridView1.Location = new System.Drawing.Point(668, 71);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView1.Name = "dataGridView1";
@@ -248,42 +236,6 @@ namespace WindowsFormsApplication1
             this.dataGridView1.Size = new System.Drawing.Size(632, 563);
             this.dataGridView1.TabIndex = 11;
             this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
-            // 
-            // Date
-            // 
-            this.Date.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Date.HeaderText = "날짜";
-            this.Date.Name = "Date";
-            // 
-            // Time
-            // 
-            this.Time.HeaderText = "시간";
-            this.Time.MinimumWidth = 10;
-            this.Time.Name = "Time";
-            // 
-            // Face
-            // 
-            this.Face.HeaderText = "사진";
-            this.Face.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Stretch;
-            this.Face.Name = "Face";
-            this.Face.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Face.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.Face.Width = 60;
-            // 
-            // Stand
-            // 
-            this.Stand.HeaderText = "기준값";
-            this.Stand.Name = "Stand";
-            // 
-            // Measure
-            // 
-            this.Measure.HeaderText = "측정값";
-            this.Measure.Name = "Measure";
-            // 
-            // Warn
-            // 
-            this.Warn.HeaderText = "판정";
-            this.Warn.Name = "Warn";
             // 
             // label6
             // 
@@ -352,11 +304,20 @@ namespace WindowsFormsApplication1
             this.프로그램정보ToolStripMenuItem.Text = "프로그램 정보";
             this.프로그램정보ToolStripMenuItem.Click += new System.EventHandler(this.프로그램정보ToolStripMenuItem_Click);
             // 
-            // Form1
+			// comboBox2
+            // 
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.ItemHeight = 15;
+            this.comboBox2.Location = new System.Drawing.Point(1081, 40);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(211, 23);
+            this.comboBox2.TabIndex = 14;
+            //             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1310, 685);
+            this.Controls.Add(this.comboBox2);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.comboBox1);
@@ -377,7 +338,6 @@ namespace WindowsFormsApplication1
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "석태지 열화상 프로그램";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -409,12 +369,7 @@ namespace WindowsFormsApplication1
         private MenuStrip menuStrip1;
         private ToolStripMenuItem 설정ToolStripMenuItem;
         private ToolStripMenuItem 도움말ToolStripMenuItem;
-        private DataGridViewTextBoxColumn Date;
-        private DataGridViewTextBoxColumn Time;
-        private DataGridViewImageColumn Face;
-        private DataGridViewTextBoxColumn Stand;
-        private DataGridViewTextBoxColumn Measure;
-        private DataGridViewImageColumn Warn;
+        private ComboBox comboBox2;
         private ToolStripMenuItem 프로그램정보ToolStripMenuItem;
         private ToolStripMenuItem 로그인ToolStripMenuItem;
         private ToolStripMenuItem 로그아웃ToolStripMenuItem;

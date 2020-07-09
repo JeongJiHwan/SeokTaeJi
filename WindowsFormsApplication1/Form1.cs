@@ -13,6 +13,9 @@ using System.Threading;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Media;
+using MySql.Data.Common;
+using MySql.Data.MySqlClient;
+using System.Data.SqlClient;
 
 namespace WindowsFormsApplication1
 {
@@ -26,13 +29,27 @@ namespace WindowsFormsApplication1
         Font arialFont = new Font("Arial", 20);
         Rect[] faces;
         float[] val = new float[10];
-        DataMgr dMgr = new DataMgr();
         float standard = 110;
         bool flip = false;
         bool startMeasure = false;
         SoundPlayer simpleSound = new SoundPlayer(@"경보음2.wav");
         int framecnt = 0;
         int alarmcnt = 0;
+        MySqlConnection conn;
+        Mat good;
+        Mat bad;
+        DataTable dtRecord = new DataTable();
+
+        public void OpenConnection()
+        {
+            string strconn = "Server=localhost;Database=edu;Uid=root;Pwd=1234;";
+            conn = new MySqlConnection(strconn);
+            conn.Open();
+        }
+        public void CloseConnection()
+        {
+            conn.Close();
+        }
         private void CaptureCamera()
         {
 
@@ -52,7 +69,7 @@ namespace WindowsFormsApplication1
 
             if (!faceCascade.Load(filenameFaceCascade))
             {
-                MessageBox.Show("error");
+                MessageBox.Show("haar error");
                 return;
             }
             while (isCameraRunning == 1)
@@ -103,32 +120,58 @@ namespace WindowsFormsApplication1
                         }
                         if (framecnt % 10 == 0)
                         {
-                            List<Data> dList = new List<Data>();
                             for (int i = 0; i < faces.Length; i++)
                             {
-                                Mat dst = frame.SubMat(faces[i]);
-                                DateTime time = DateTime.Now;
-                                string str = time.ToString("yyyyMMddhhmmss");
-
-                                string filename = string.Format("../../faces/{0}.jpg", str);
-
-                                //Cv2.ImShow(filename, dst);
-                                Cv2.ImWrite(filename, dst);
-
-                                Data d = new Data() { Date = time.ToString("yyyy/MM/dd"), Time = time.ToString("hh:mm:ss"), face = filename, measure = val[i].ToString(), stand = standard.ToString(), warn = val[i] > standard };
-                                dMgr.inputData(d);
-                                dList.Add(d);
-
-                                if (d.warn)
+                                try
                                 {
-                                    simpleSound.Play();
-                                    alarmcnt++;
+                                    Mat dst = frame.SubMat(faces[i]);
+                                    OpenCvSharp.Size s = new OpenCvSharp.Size(64, 64);
+                                    Mat resized = dst.Resize(s);
+                                    DateTime time = DateTime.Now;
+                                    
+                                    OpenConnection();
+                                    MySqlCommand command = new MySqlCommand("", conn);
+                                    command.CommandText = "INSERT INTO data VALUES(@Date, @Time, @Face, @Stand, @Measure, @Warn)";
+                                    byte[] data = resized.ToBytes();
+                                    command.Parameters.AddWithValue("@Date", time.ToString("yyyy/MM/dd"));
+                                    command.Parameters.AddWithValue("@Time", time.ToString("hh:mm:ss"));
+                                    MySqlParameter blob = new MySqlParameter("@Face", MySqlDbType.Blob, data.Length);
+                                    blob.Value = data;
+                                    command.Parameters.Add(blob);
+                                    command.Parameters.AddWithValue("@Stand", standard);
+                                    command.Parameters.AddWithValue("@Measure", val[i]);
+                                    
+                                    if (val[i] > standard)
+                                    {
+                                        byte[] icon = bad.ToBytes();
+                                        MySqlParameter para = new MySqlParameter("@Warn", MySqlDbType.Blob, icon.Length);
+                                        para.Value = icon;
+                                        command.Parameters.Add(para);
+                                    }
+                                    else
+                                    {
+                                        byte[] icon = good.ToBytes();
+                                        MySqlParameter para = new MySqlParameter("@Warn", MySqlDbType.Blob, icon.Length);
+                                        para.Value = icon;
+                                        command.Parameters.Add(para);
+                                    }
+                                    command.ExecuteNonQuery();
+                                    CloseConnection();
+
+                                    if (val[i] > standard)
+                                    {
+                                        simpleSound.Play();
+                                        alarmcnt++;
+                                    }
                                 }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show(ex.ToString());
+                                }          
+                                
                             }
-                            dMgr.DisplayData(dataGridView1, dList);
+                            DisplayData("SELECT * FROM data");
                         }
-                        
-                        
                     }
                     else
                     {
@@ -144,6 +187,12 @@ namespace WindowsFormsApplication1
         public Form1()
         {
             InitializeComponent();
+            Mat tmpgood = Cv2.ImRead("../../good.png");
+            Mat tmpbad = Cv2.ImRead("../../bad.png");
+            OpenCvSharp.Size resize = new OpenCvSharp.Size(64, 64);
+            good = tmpgood.Resize(resize);
+            bad = tmpbad.Resize(resize);
+            ReadDate();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -156,7 +205,6 @@ namespace WindowsFormsApplication1
             }
             else
             {
-                
                 button1.Text = "카메라 On";
                 isCameraRunning = 0;                
 
@@ -220,188 +268,37 @@ namespace WindowsFormsApplication1
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Form3 f = new Form3();
-            if (f.ShowDialog() == DialogResult.OK)
-            {
-            }
-            else
-            {
-                Application.Exit(); 
-            }
-            f.Close();
-
-            dMgr.LoadFromFile();
-            dMgr.DisplayData(dataGridView1);
+            OpenConnection();
+            DisplayData("SELECT * FROM data");
+            CloseConnection();
             textBox2.Text = DateTime.Now.ToString();
-            alarmcnt = dMgr.findBadData().Count-1;
-            label6.Text = string.Format("Count : 0   Alarm : 0");
+            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count, alarmcnt + 1);
         }
         private void Timer1_Tick(object sender, EventArgs e)
         {
             textBox2.Text = DateTime.Now.ToString();
         }
-
-        struct Data
+        public void DisplayData(string query)
         {
-            public override string ToString()
+            //dataGridView1.Rows.Clear();
+            try
             {
-                return string.Format("{0}\t{1}\t{2}\t{3}\t{4}", Date, Time, face, measure, stand, warn);
+                MySqlCommand sqlCmd = new MySqlCommand();
+                sqlCmd.Connection = conn;
+                sqlCmd.CommandType = CommandType.Text;
+                sqlCmd.CommandText = query;
+                MySqlDataAdapter sqlDataAdap = new MySqlDataAdapter(sqlCmd);
+                dtRecord.Clear();
+                sqlDataAdap.Fill(dtRecord);
+                //sqlDataAdap.Update(dtRecord);
+                dataGridView1.DataSource = dtRecord;
             }
-            public void SaveToFile(StreamWriter sw)
+            catch (Exception)
             {
-                sw.WriteLine(Date);
-                sw.WriteLine(Time);
-                sw.WriteLine(face);
-                sw.WriteLine(measure);
-                sw.WriteLine(stand);
-                sw.WriteLine(warn==true?"경고":"정상");
             }
-            public void LoadFromFile(StreamReader sr)
-            {
-                Date = sr.ReadLine();
-                Time = sr.ReadLine();
-                face = sr.ReadLine();
-                measure = sr.ReadLine();
-                stand = sr.ReadLine();
-                warn = sr.ReadLine() == "정상" ? false : true;
-            }
-            public string Date;
-            public string Time;
-            public string face;
-            public string measure;
-            public string stand;
-            public bool warn;
-        };
-        class DataMgr
-        {
-            public DataMgr()
-            {
-                Bitmap tmpgood = new Bitmap("../../good.png");
-                Bitmap tmpbad = new Bitmap("../../bad.png");
-                System.Drawing.Size resize = new System.Drawing.Size(50, 50);
-                good = new Bitmap(tmpgood, resize);
-                bad = new Bitmap(tmpbad, resize);
-            }
-            public void SaveToFile()
-            {
-                StreamWriter sw = File.AppendText("../../data.txt");
-                sw.WriteLine("{0}", dList.Count);
-                foreach (Data m in dList)
-                {
-                    m.SaveToFile(sw);
-                }
-                sw.Close();
-                sw.Dispose();
-            }
-            public void LoadFromFile()
-            {
-                StreamReader sr = new StreamReader("../../data.txt");
-                int iCount = int.Parse(sr.ReadLine());
-                for (int i = 0; i < iCount; i++)
-                {
-                    Data m = new Data();
-                    m.LoadFromFile(sr);
-                    dList.Add(m);
-                }
-                sr.Close();
-                sr.Dispose();
-            }
-            public void DisplayData(DataGridView view)
-            {
-                view.Rows.Clear();
-                view.Refresh();
-                for (int i=0; i<dList.Count; i++)
-                {
-                    string[] row1 = { dList[i].Date, dList[i].Time};
-                    view.Rows.Add(row1);
-                    Image img = Image.FromFile(dList[i].face);
-                    ((DataGridViewImageCell)view.Rows[i].Cells[2]).Value = img;
-                    view.Rows[i].Cells[3].Value = dList[i].stand;
-                    view.Rows[i].Cells[4].Value = dList[i].measure;
+            dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.Rows.Count - 1;
                     
-                    if (dList[i].warn)
-                    {
-                        ((DataGridViewImageCell)view.Rows[i].Cells[5]).Value = bad;
-                    }
-                    else
-                    {
-                        ((DataGridViewImageCell)view.Rows[i].Cells[5]).Value = good;
-                    }
-                    //view.Rows.Add(
-                    //list.Items.Add(dList[i]);
-                    //if (dList[i].warn == true) cnt++;
-                    view.FirstDisplayedScrollingRowIndex = view.Rows.Count-1;
-                    view.Refresh();
-                }
-                
-            }
-            public void DisplayData(DataGridView view, List<Data> dataList, bool opt = false)
-            {
-                if (opt)
-                {
-                    view.Rows.Clear();
-                    view.Refresh();
-                }
-                for (int i = 0; i < dataList.Count; i++)
-                {
-                    int lastIdx = view.Rows.Count;
-                    string[] row1 = { dataList[i].Date, dataList[i].Time };
-                    view.Rows.Add(row1);
-                    Image img = Image.FromFile(dataList[i].face);
-                    ((DataGridViewImageCell)view.Rows[lastIdx].Cells[2]).Value = img;
-                    view.Rows[lastIdx].Cells[3].Value = dataList[i].stand;
-                    view.Rows[lastIdx].Cells[4].Value = dataList[i].measure;
 
-                    if (dataList[i].warn)
-                    {
-                        ((DataGridViewImageCell)view.Rows[lastIdx].Cells[5]).Value = bad;
-                    }
-                    else
-                    {
-                        ((DataGridViewImageCell)view.Rows[lastIdx].Cells[5]).Value = good;
-                    }
-                    view.FirstDisplayedScrollingRowIndex = view.Rows.Count - 1;
-                    view.Refresh();
-                }
-
-            }
-            public List<Data> findGoodData()
-            {
-                List<Data> list = new List<Data>();
-                for(int i=0; i<dList.Count; i++)
-                {
-                    if (!dList[i].warn)
-                    {
-                        list.Add(dList[i]);
-                    }
-                }
-                return list;                
-            }
-            public List<Data> findBadData()
-            {
-                List<Data> list = new List<Data>();
-                for (int i = 0; i < dList.Count; i++)
-                {
-                    if (dList[i].warn)
-                    {
-                        list.Add(dList[i]);
-                    }
-                }
-                return list;
-            }
-            public void inputData(Data d)
-            {
-                dList.Add(d);
-            }
-            Bitmap good;
-            Bitmap bad;
-            List<Data> dList = new List<Data>();
-        }
-
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            dMgr.SaveToFile();
-        }
         protected override void WndProc(ref Message m)
         {
             int WM_CLOSE = 0x0010;
@@ -412,7 +309,6 @@ namespace WindowsFormsApplication1
             }
             base.WndProc(ref m);
         }
-
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             standard = float.Parse(textBox1.Text);
@@ -420,18 +316,15 @@ namespace WindowsFormsApplication1
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            List<Data> tmpList;
             switch(comboBox1.SelectedIndex){
                 case 0: //전체
-                    dMgr.DisplayData(dataGridView1);
+                    DisplayData("SELECT * FROM data");
                     break;
                 case 1: //정상
-                    tmpList = dMgr.findGoodData();
-                    dMgr.DisplayData(dataGridView1, tmpList, true);
+                    DisplayData("SELECT * FROM data WHERE Stand>Measure");
                     break;
                 case 2: //경고
-                    tmpList = dMgr.findBadData();
-                    dMgr.DisplayData(dataGridView1, tmpList, true);
+                    DisplayData("SELECT * FROM data WHERE Stand<Measure");
                     break;
             }
         }
@@ -440,7 +333,6 @@ namespace WindowsFormsApplication1
         {
             label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count , alarmcnt+1);
         }
-
         private void 프로그램정보ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form2 info = new Form2();
@@ -458,6 +350,29 @@ namespace WindowsFormsApplication1
         {
             Application.Exit();
         }
+		private void ReadDate()
+        {
+            try
+            {
+                MySqlCommand command = new MySqlCommand("select distinct Date from data", conn);
+                MySqlDataReader rdr = command.ExecuteReader();
 
-    } 
-}
+                string temp = string.Empty;
+                if (rdr == null) temp = "No return";
+                else
+                {
+                    while (rdr.Read())
+                    {
+                        for (int i = 0; i < rdr.FieldCount; i++)
+                        {
+                            comboBox2.Items.Add(rdr[i]);
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("ReadDate Error");
+            }
+        }
+    }}
