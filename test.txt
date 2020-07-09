@@ -1,5 +1,6 @@
 void func(int i, int j)
 {
+	//추가 작업
 	//do action
             //추가작업2
 }
