@@ -35,5 +35,27 @@ namespace WindowsFormsApplication1
         {
             this.DialogResult = DialogResult.Cancel;
         }
+
+        //private void Form3_KeyDown(object sender, KeyEventArgs e)
+        //{
+        //    if (e.Keys   == Key.Enter)
+        //    {
+        //        if (Username.Text == "석태지" && Password.Text == "1234")
+        //        {
+        //            this.DialogResult = DialogResult.OK;
+
+        //        }
+        //        else
+        //        {
+        //            this.DialogResult = DialogResult.Cancel;
+        //            MessageBox.Show("로그인에 실패했습니다.");
+        //        }
+        //    }
+        //}
+
+        private void Username_KeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
     }
 }

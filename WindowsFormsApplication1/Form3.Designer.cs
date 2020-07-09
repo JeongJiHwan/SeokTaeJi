@@ -77,6 +77,7 @@
             this.Username.Name = "Username";
             this.Username.Size = new System.Drawing.Size(141, 21);
             this.Username.TabIndex = 1;
+            this.Username.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Username_KeyDown);
             // 
             // button2
             // 
