@@ -310,6 +310,8 @@ namespace WindowsFormsApplication1
                 MessageBox.Show(e.ToString());
             }
             //dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.Rows.Count;
+            dataGridView1.Rows[dataGridView1.Rows.Count-1].Selected = true;
+            dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.Rows.Count - 1;
         }
                     
         private void textBox1_TextChanged(object sender, EventArgs e)
