@@ -39,6 +39,8 @@ namespace WindowsFormsApplication1
         Mat good;
         Mat bad;
         DataTable dtRecord;
+        string today = DateTime.Now.ToString("yyyy-MM-dd");
+
 
         public void OpenConnection()
         {
@@ -156,12 +158,10 @@ namespace WindowsFormsApplication1
                                         command.Parameters.Add(para);
                                     }
                                     command.ExecuteNonQuery();
-                                    CloseConnection();
 
                                     if (val[i] > standard)
                                     {
                                         simpleSound.Play();
-                                        alarmcnt++;
                                     }
                                 }
                                 catch (Exception ex)
@@ -170,7 +170,7 @@ namespace WindowsFormsApplication1
                                 }          
                                 
                             }
-                            DisplayData("SELECT * FROM data");
+                            DisplayData(string.Format("SELECT * FROM data WHERE Date=\"{0}\"", today));
                         }
                     }
                     else
@@ -279,10 +279,10 @@ namespace WindowsFormsApplication1
             }
             f.Close();            
             OpenConnection();
-            countAlarm();
+            countAlarm(string.Format("SELECT * FROM data WHERE Stand<Measure AND Date=\"{0}\"", today));
             ReadDate();
-            DisplayData("SELECT * FROM data");
-            CloseConnection();
+            DisplayData(string.Format("SELECT * FROM data WHERE Date=\"{0}\"", today));
+            
             textBox2.Text = DateTime.Now.ToString();
             label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count, alarmcnt);
         }
@@ -319,15 +319,19 @@ namespace WindowsFormsApplication1
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch(comboBox1.SelectedIndex){
+            string str = (string)comboBox2.SelectedItem;
+            switch (comboBox1.SelectedIndex){
                 case 0: //전체
+                    countAlarm("SELECT * FROM data WHERE Stand<Measure");
                     DisplayData("SELECT * FROM data");
                     break;
                 case 1: //정상
-                    DisplayData("SELECT * FROM data WHERE Stand>Measure");
+                    countAlarm(string.Format("SELECT * FROM data WHERE Stand<Measure AND Date=\"{0}\"", str));
+                    DisplayData(string.Format("SELECT * FROM data WHERE Stand>Measure AND Date=\"{0}\"", str));
                     break;
                 case 2: //경고
-                    DisplayData("SELECT * FROM data WHERE Stand<Measure");
+                    countAlarm(string.Format("SELECT * FROM data WHERE Stand<Measure AND Date=\"{0}\"", str));
+                    DisplayData(string.Format("SELECT * FROM data WHERE Stand<Measure AND Date=\"{0}\"", str));
                     break;
             }
         }
@@ -388,13 +392,14 @@ namespace WindowsFormsApplication1
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             dtRecord.Dispose();
-            conn.Close();
+            CloseConnection();
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             string str = (string)comboBox2.SelectedItem;
-            DisplayData(string.Format("SELECT * FROM data WHERE Date = {0}", str));
+            countAlarm(string.Format("SELECT * FROM data WHERE Stand<Measure AND Date=\"{0}\"", str));
+            DisplayData(string.Format("SELECT * FROM data WHERE Date=\"{0}\"", str));
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -404,11 +409,12 @@ namespace WindowsFormsApplication1
                 e.Cancel = true;
             }
         }
-        private void countAlarm()
+        private void countAlarm(string query)
         {
+            alarmcnt = 0;
             try
             {
-                MySqlCommand command = new MySqlCommand("SELECT * FROM data WHERE Stand<Measure", conn);
+                MySqlCommand command = new MySqlCommand(query, conn);
                 MySqlDataReader rdr = command.ExecuteReader();
 
                 string temp = string.Empty;
