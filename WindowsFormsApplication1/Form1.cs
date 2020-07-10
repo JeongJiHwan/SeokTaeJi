@@ -50,7 +50,8 @@ namespace WindowsFormsApplication1
         }
         public void CloseConnection()
         {
-            conn.Close();
+            if (conn != null)
+                conn.Close();
         }
         private void CaptureCamera()
         {
@@ -83,13 +84,12 @@ namespace WindowsFormsApplication1
                     Cv2.Flip(frame, frame, FlipMode.Y);
                 if (!frame.Empty())
                 {
-
                     faces = faceCascade.DetectMultiScale(frame);
                     if (faces.Length > 0 && startMeasure)
                     {
                         for (int i = 0; i < faces.Length; i++)
                         {
-                            
+
                             val[i] = (float)Cv2.Mean(frame.SubMat(faces[i]));
                             if (val[i] > standard)
                             {
@@ -130,7 +130,7 @@ namespace WindowsFormsApplication1
                                     OpenCvSharp.Size s = new OpenCvSharp.Size(64, 64);
                                     Mat resized = dst.Resize(s);
                                     DateTime time = DateTime.Now;
-                                    
+
                                     OpenConnection();
                                     MySqlCommand command = new MySqlCommand("", conn);
                                     command.CommandText = "INSERT INTO data VALUES(@Date, @Time, @Face, @Stand, @Measure, @Warn)";
@@ -142,7 +142,7 @@ namespace WindowsFormsApplication1
                                     command.Parameters.Add(blob);
                                     command.Parameters.AddWithValue("@Stand", standard);
                                     command.Parameters.AddWithValue("@Measure", val[i]);
-                                    
+
                                     if (val[i] > standard)
                                     {
                                         byte[] icon = bad.ToBytes();
@@ -167,8 +167,8 @@ namespace WindowsFormsApplication1
                                 catch (Exception ex)
                                 {
                                     MessageBox.Show(ex.ToString());
-                                }          
-                                
+                                }
+
                             }
                             DisplayData(string.Format("SELECT * FROM data WHERE Date=\"{0}\"", today));
                         }
@@ -192,7 +192,7 @@ namespace WindowsFormsApplication1
             OpenCvSharp.Size resize = new OpenCvSharp.Size(64, 64);
             good = tmpgood.Resize(resize);
             bad = tmpbad.Resize(resize);
-            
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -206,7 +206,7 @@ namespace WindowsFormsApplication1
             else
             {
                 button1.Text = "카메라 On";
-                isCameraRunning = 0;                
+                isCameraRunning = 0;
 
                 if (capture.IsOpened())
                 {
@@ -216,7 +216,7 @@ namespace WindowsFormsApplication1
                 pictureBox1.Image = null;
             }
 
-            
+
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -245,7 +245,7 @@ namespace WindowsFormsApplication1
         }
         private void button4_Click(object sender, EventArgs e)
         {
-            if(isCameraRunning == 0)
+            if (isCameraRunning == 0)
             {
                 MessageBox.Show("카메라를 켜주세요.");
             }
@@ -255,7 +255,7 @@ namespace WindowsFormsApplication1
                 {
                     button4.Text = "측정종료";
                     startMeasure = true;
-                    
+
                 }
                 else
                 {
@@ -277,12 +277,12 @@ namespace WindowsFormsApplication1
             {
                 Application.Exit();
             }
-            f.Close();            
+            f.Close();
             OpenConnection();
             countAlarm(string.Format("SELECT * FROM data WHERE Stand<Measure AND Date=\"{0}\"", today));
             ReadDate();
             DisplayData(string.Format("SELECT * FROM data WHERE Date=\"{0}\"", today));
-            
+
             textBox2.Text = DateTime.Now.ToString();
             label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count, alarmcnt);
         }
@@ -310,10 +310,10 @@ namespace WindowsFormsApplication1
                 MessageBox.Show(e.ToString());
             }
             //dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.Rows.Count;
-            dataGridView1.Rows[dataGridView1.Rows.Count-1].Selected = true;
+            dataGridView1.Rows[dataGridView1.Rows.Count - 1].Selected = true;
             dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.Rows.Count - 1;
         }
-                    
+
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             standard = float.Parse(textBox1.Text);
@@ -322,7 +322,8 @@ namespace WindowsFormsApplication1
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             string str = (string)comboBox2.SelectedItem;
-            switch (comboBox1.SelectedIndex){
+            switch (comboBox1.SelectedIndex)
+            {
                 case 0: //전체
                     countAlarm("SELECT * FROM data WHERE Stand<Measure");
                     DisplayData("SELECT * FROM data");
@@ -340,7 +341,7 @@ namespace WindowsFormsApplication1
 
         private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count , alarmcnt);
+            label6.Text = string.Format("Count : {0}   Alarm : {1}", dataGridView1.Rows.Count, alarmcnt);
         }
         private void 프로그램정보ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -359,9 +360,9 @@ namespace WindowsFormsApplication1
         {
             Application.Exit();
         }
-		private void ReadDate()
+        private void ReadDate()
         {
-            string str="";
+            string str = "";
             try
             {
                 MySqlCommand command = new MySqlCommand("SELECT DISTINCT Date FROM data", conn);
@@ -387,8 +388,8 @@ namespace WindowsFormsApplication1
             {
                 MessageBox.Show(e.ToString());
             }
-            if (comboBox2.Items.Contains(str)) comboBox2.SelectedItem=str;
-            
+            if (comboBox2.Items.Contains(str)) comboBox2.SelectedItem = str;
+
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
